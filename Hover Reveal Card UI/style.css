@@ -1,0 +1,52 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui;
+}
+
+body{
+  height:100vh;
+  background:#0a0a0a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Card */
+.card{
+  width:360px;
+  height:240px;
+  background:#111;
+  border-radius:28px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  transition:transform 0.4s, box-shadow 0.4s;
+  box-shadow:0 8px 25px rgba(0,0,0,0.5);
+}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 15px 40px rgba(0,0,0,0.7);
+}
+
+/* Image Layer */
+.image{
+  position:absolute;
+  inset:0;
+  background:url("https://picsum.photos/700") center/cover;
+  transition:mask-position 0.1s;
+  border-radius:28px;
+}
+
+/* Text */
+h2{
+  position:relative;
+  z-index:2;
+  font-size:28px;
+  transition:transform 0.2s;
+}

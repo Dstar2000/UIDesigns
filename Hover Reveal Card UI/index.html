@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Enhanced Vision Bubble</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="image"></div>
+      <h2>Hover Me</h2>
+    </div>
+
+    <!-- Script -->
+
+    <script>
+      const card = document.querySelector(".card");
+      const image = document.querySelector(".image");
+      const text = document.querySelector(".card h2");
+
+      let mouseX = 0,
+        mouseY = 0;
+      let currentX = 0,
+        currentY = 0;
+      let radius = 0,
+        targetRadius = 0;
+
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+        targetRadius = 120;
+      });
+
+      card.addEventListener("mouseleave", (e) => {
+        targetRadius = 0;
+      });
+
+      function animate() {
+        currentX += (mouseX - currentX) * 0.15;
+        currentY += (mouseY - currentY) * 0.15;
+        radius += (targetRadius - radius) * 0.15;
+
+        image.style.maskImage = `
+    radial-gradient(circle ${radius}px at ${currentX}px ${currentY}px,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.8) 40%,
+    rgba(255,255,255,.3) 60%,
+    transparent 80%)`;
+        image.style.webkitMaskImage = image.style.maskImage;
+
+        image.style.boxShadow = `0 0 ${radius / 2}px rgba(0,200,255,0.5)`;
+
+        text.style.transform = `translate(${(currentX - 170) / 20}px, ${(currentY - 110) / 20}px)`;
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
