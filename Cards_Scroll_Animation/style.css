@@ -1,0 +1,85 @@
+* {
+ margin:0;
+ padding:0;
+ box-sizing:border-box;
+}
+
+body {
+background: #1c1c1c;
+background: radial-gradient(circle, rgba(28, 28, 28, 1) 0%, rgba(43, 2, 2, 1) 100%);
+ font-family:Arial;
+}
+
+/* MAIN SCROLLER */
+.scroller {
+ height:100vh;
+ overflow-y:auto;
+ scroll-snap-type:y mandatory;
+ perspective:1200px;
+}
+
+/* FULL SCREEN SECTION */
+.section {
+ height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ scroll-snap-align:start;
+}
+
+/* CARD */
+.card {
+ width:40vw;
+ height:85%;
+ border-radius:25px;
+
+ background:
+ linear-gradient(to top,rgba(0,0,0,.2),transparent),
+ var(--img) center/cover;
+
+ display:flex;
+ align-items:flex-end;
+ padding:30px;
+
+ color:white;
+ font-size:40px;
+ font-weight:bold;
+
+ transform-style:preserve-3d;
+
+ box-shadow: 0 40px 80px rgba(0,0,0,.6);
+
+ animation:reveal linear both;
+ animation-timeline:view();
+ animation-range:entry 30% exit 40%;
+}
+
+/* TEXT */
+.card h2 {
+ transform:translateZ(60px);
+}
+
+/* SCROLL ANIMATION */
+@keyframes reveal {
+ from {
+   transform:
+     rotateX(25deg)
+     scale(.7)
+     translateY(100px);
+   opacity:0;
+ }
+
+ to {
+   transform:
+     rotateX(0)
+     scale(1)
+     translateY(0);
+   opacity:1;
+ }
+}
+
+/* HOVER EXTRA DEPTH */
+.card:hover {
+ transform:translateZ(40px) scale(1.03);
+ transition:.4s ease;
+}
