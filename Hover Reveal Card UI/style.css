@@ -2,51 +2,86 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:system-ui;
 }
 
 body{
-  height:100vh;
-  background:#0a0a0a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* Card */
-.card{
-  width:360px;
-  height:240px;
-  background:#111;
-  border-radius:28px;
-  position:relative;
+  font-family:system-ui;
+  background:#000;
   overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  transition:transform 0.4s, box-shadow 0.4s;
-  box-shadow:0 8px 25px rgba(0,0,0,0.5);
 }
 
-.card:hover{
-  transform:translateY(-10px);
-  box-shadow:0 15px 40px rgba(0,0,0,0.7);
-}
-
-/* Image Layer */
-.image{
-  position:absolute;
-  inset:0;
-  background:url("https://picsum.photos/700") center/cover;
-  transition:mask-position 0.1s;
-  border-radius:28px;
-}
-
-/* Text */
-h2{
+.slider{
   position:relative;
-  z-index:2;
-  font-size:28px;
-  transition:transform 0.2s;
+  width:100vw;
+  height:100vh;
+  perspective:1200px;
+}
+
+/* Slides */
+.slide{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  opacity:0;
+  transform:scale(0.9);
+  transition:opacity 1s ease, transform 1s ease;
+}
+
+.slide.active{
+  opacity:1;
+  transform:scale(1);
+  z-index:10;
+}
+
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.content{
+  position:absolute;
+  bottom:10%;
+  left:5%;
+  color:white;
+  text-shadow:0 5px 15px rgba(0,0,0,0.7);
+}
+
+.content h1{
+  font-size:3rem;
+  margin-bottom:10px;
+}
+
+.content p{
+  font-size:1.2rem;
+}
+
+/* Navigation Buttons */
+button.prev, button.next{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,0.5);
+  color:white;
+  border:none;
+  font-size:2rem;
+  padding:15px 20px;
+  cursor:pointer;
+  border-radius:50%;
+  z-index:20;
+  transition:background 0.3s;
+}
+
+button.prev:hover, button.next:hover{
+  background:rgba(0,0,0,0.8);
+}
+
+button.prev{
+  left:20px;
+}
+
+button.next{
+  right:20px;
 }
