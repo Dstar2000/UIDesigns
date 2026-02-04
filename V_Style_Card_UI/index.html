@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+  <head>
+    <title>V Split Cards Clean</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #05060c;
+        height: 170vh;
+        font-family: Arial;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      .wrapper {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .endText {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 32px;
+        opacity: 0;
+        transition: 0.4s;
+      }
+
+      .endText.show {
+        opacity: 1;
+      }
+
+      .cards {
+        position: relative;
+        width: 900px;
+        height: 520px;
+      }
+
+      .card {
+        position: absolute;
+        width: 260px;
+        height: 360px;
+        left: 50%;
+        top: 50%;
+        background: #040124;
+        background: linear-gradient(
+          90deg,
+          rgba(4, 1, 36, 1) 0%,
+          rgba(14, 14, 77, 1) 35%,
+          rgba(11, 85, 99, 1) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 22px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+        transform: translate(-50%, -50%);
+      }
+
+      .card img {
+        width: 120%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      /* ACTIVE */
+
+      .card.active {
+        transform: translate(-50%, -50%) scale(1.6) !important;
+        z-index: 999 !important;
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="endText">End of Experience</div>
+
+    <div class="wrapper">
+      <div class="cards"></div>
+    </div>
+
+    <script>
+      const container = document.querySelector(".cards");
+      const endText = document.querySelector(".endText");
+
+      const TOTAL = 7;
+      const CENTER = Math.floor(TOTAL / 2);
+
+      for (let i = 0; i < TOTAL; i++) {
+        container.innerHTML += `
+<div class="card">
+<img src="https://picsum.photos/600/400?${i}">
+<div class="content">
+<h3>Card ${i + 1}</h3>
+<p>Scroll or Click</p>
+</div>
+</div>`;
+      }
+
+      const cards = [...document.querySelectorAll(".card")];
+
+      let locked = false;
+      let progress = 0;
+
+      /* POSITION */
+
+      function apply(p) {
+        cards.forEach((card, i) => {
+          const d = i - CENTER;
+
+          card.style.transform = `
+translate(-50%,-50%)
+translate(${d * 220 * p}px,${Math.abs(d) * -60 * p}px)
+rotate(${d * 8 * p}deg)
+scale(${1 - Math.abs(d) * 0.07 * p})
+`;
+
+          card.style.zIndex = 100 - Math.abs(d);
+        });
+      }
+
+      /* SCROLL */
+
+      window.addEventListener("scroll", () => {
+        if (locked) return;
+
+        progress = Math.min(window.scrollY / 500, 1);
+
+        apply(progress);
+
+        endText.classList.toggle("show", progress > 0.95);
+      });
+
+      /* CLICK */
+
+      cards.forEach((card) => {
+        card.onclick = (e) => {
+          e.stopPropagation();
+
+          locked = true;
+
+          cards.forEach((c) => c.classList.remove("active"));
+
+          card.classList.add("active");
+        };
+      });
+
+      /* CLICK OUTSIDE RESET */
+
+      document.body.onclick = () => {
+        locked = false;
+
+        cards.forEach((c) => c.classList.remove("active"));
+
+        apply(progress);
+      };
+    </script>
+  </body>
+</html>
