@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Next‑Level Sliding Login & Signup – enhanced</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(145deg, #3f2b96 0%, #a8c0ff 100%);
+        overflow: hidden;
+      }
+      /* --- main container --- */
+      .container {
+        position: relative;
+        width: 880px;
+        max-width: 96%;
+        min-height: 600px;
+        background: #ffffff;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow:
+          0 25px 50px -8px rgba(0, 0, 0, 0.35),
+          0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        transition: box-shadow 0.3s;
+      }
+      .container:hover {
+        box-shadow: 0 30px 60px -5px #2a1b5e;
+      }
+
+      /* --- sliding form panels --- */
+      .form-container {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        transition:
+          transform 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.3s ease;
+      }
+      .sign-in-container {
+        left: 0;
+        width: 50%;
+        z-index: 2;
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .sign-up-container {
+        left: 0;
+        width: 50%;
+        opacity: 0;
+        z-index: 1;
+        transform: translateX(0);
+        pointer-events: none;
+      }
+      .container.right-panel-active .sign-in-container {
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .container.right-panel-active .sign-up-container {
+        transform: translateX(100%);
+        opacity: 1;
+        z-index: 5;
+        pointer-events: all;
+        animation: subtleAppear 0.5s;
+      }
+      @keyframes subtleAppear {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* --- overlay (sliding curtain) --- */
+      .overlay-container {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 100;
+        transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .container.right-panel-active .overlay-container {
+        transform: translateX(-100%);
+      }
+      .overlay {
+        background: linear-gradient(
+          135deg,
+          #4a2fbd 0%,
+          #6a3ec2 40%,
+          #8b50d0 80%
+        );
+        background-size: 250% 250%;
+        animation: liquidShift 14s infinite alternate;
+        color: #fff;
+        position: relative;
+        left: -100%;
+        height: 100%;
+        width: 200%;
+        transform: translateX(0);
+        transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @keyframes liquidShift {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 100% 100%;
+        }
+      }
+      .container.right-panel-active .overlay {
+        transform: translateX(50%);
+      }
+      .overlay-panel {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 42px;
+        text-align: center;
+        top: 0;
+        height: 100%;
+        width: 50%;
+        transition: transform 0.75s ease;
+      }
+      .overlay-left {
+        transform: translateX(-20%);
+      }
+      .container.right-panel-active .overlay-left {
+        transform: translateX(0);
+      }
+      .overlay-right {
+        right: 0;
+        transform: translateX(0);
+      }
+      .container.right-panel-active .overlay-right {
+        transform: translateX(20%);
+      }
+      .overlay-panel h1 {
+        font-size: 2.3rem;
+        margin-bottom: 16px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .overlay-panel p {
+        font-size: 1.05rem;
+        line-height: 1.5;
+        margin-bottom: 36px;
+        font-weight: 400;
+        max-width: 280px;
+      }
+      .overlay-panel button {
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(6px);
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        color: white;
+        padding: 12px 38px;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: 0.3s;
+        cursor: pointer;
+        box-shadow: 0 8px 18px -6px #1f103b;
+      }
+      .overlay-panel button:hover {
+        background: #ffffff;
+        color: #3a22a0;
+        border-color: white;
+        transform: scale(1.03) translateY(-2px);
+        box-shadow: 0 15px 25px -8px #1b0f38;
+      }
+
+      /* --- forms --- */
+      .form {
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 44px;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 3;
+      }
+      h1 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1e0f4a;
+        font-size: 2.1rem;
+        letter-spacing: -0.5px;
+      }
+      .form-group {
+        position: relative;
+        width: 100%;
+        margin-bottom: 28px;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 18px 46px 8px 18px;
+        border: 2px solid #e6e2f0;
+        border-radius: 30px;
+        font-size: 16px;
+        background: #f9f8ff;
+        transition: all 0.25s;
+        outline: none;
+        color: #1e0f4a;
+        font-weight: 500;
+      }
+      .form-group input:focus {
+        border-color: #6d44b5;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(109, 68, 181, 0.15);
+      }
+      .form-group label {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+        color: #6b5f8b;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.2s;
+        pointer-events: none;
+        background: #f9f8ff;
+        padding: 0 8px;
+        border-radius: 20px;
+      }
+      .form-group input:focus + label,
+      .form-group input:not(:placeholder-shown) + label {
+        top: 6px;
+        font-size: 11px;
+        color: #512da8;
+        background: white;
+        left: 16px;
+        font-weight: 700;
+      }
+      .password-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: #7b6ca8;
+        cursor: pointer;
+        font-size: 18px;
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+        transition: 0.2s;
+      }
+      .password-toggle:hover {
+        color: #341d79;
+      }
+      .submit-btn {
+        border-radius: 60px;
+        border: none;
+        background: linear-gradient(145deg, #4527a0, #5e35b1);
+        color: white;
+        font-weight: 700;
+        padding: 14px 40px;
+        margin-top: 16px;
+        width: 100%;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        transition: 0.35s;
+        cursor: pointer;
+        box-shadow: 0 6px 16px #c7b8ff;
+      }
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -110%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.65s;
+      }
+      .submit-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 26px #9d87e0;
+        background: linear-gradient(145deg, #5e35b1, #4527a0);
+      }
+      .submit-btn:hover::before {
+        left: 110%;
+      }
+      .social-container {
+        margin: 20px 0 10px;
+      }
+      .social-container a {
+        border: 1px solid #e0d9f2;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 6px;
+        height: 44px;
+        width: 44px;
+        color: #3c2a78;
+        text-decoration: none;
+        transition: 0.25s;
+        background: #f3efff;
+        font-size: 1.2rem;
+      }
+      .social-container a:hover {
+        background: #4a2c9c;
+        color: white;
+        border-color: #4a2c9c;
+        transform: translateY(-5px);
+      }
+      .error-message {
+        color: #d32f2f;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 4px;
+        text-align: left;
+        width: 100%;
+        display: none;
+        background: #ffeaea;
+        padding: 8px 16px;
+        border-radius: 40px;
+      }
+      .forgot-password {
+        color: #5e35b1;
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 16px;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+      .forgot-password:hover {
+        color: #2d1166;
+        text-decoration: underline;
+      }
+      /* responsive fallback */
+      @media (max-width: 680px) {
+        .container {
+          height: 700px;
+        }
+        .sign-in-container,
+        .sign-up-container {
+          width: 100%;
+        }
+        .overlay-container {
+          left: 0;
+          width: 100%;
+          top: 50%;
+          height: 50%;
+          transform: translateY(-100%);
+        }
+        .container.right-panel-active .overlay-container {
+          transform: translateY(-100%) translateX(0);
+        }
+        .overlay {
+          width: 100%;
+          height: 200%;
+          left: 0;
+          top: -100%;
+        }
+        .container.right-panel-active .overlay {
+          transform: translateY(50%);
+        }
+        .overlay-panel {
+          width: 100%;
+          height: 50%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <!-- SIGN UP PANEL -->
+      <div class="form-container sign-up-container">
+        <form class="form" id="signUpForm" novalidate>
+          <h1>Create Account</h1>
+          <div class="form-group">
+            <input
+              type="text"
+              id="signUpName"
+              placeholder=" "
+              autocomplete="off"
+              required
+            />
+            <label for="signUpName">Full name</label>
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              id="signUpEmail"
+              placeholder=" "
+              autocomplete="off"
+              required
+            />
+            <label for="signUpEmail">Email address</label>
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="signUpPassword"
+              placeholder=" "
+              required
+              minlength="6"
+            />
+            <label for="signUpPassword">Password (min 6)</label>
+            <button
+              type="button"
+              class="password-toggle"
+              id="toggleSignUpPassword"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="signUpConfirmPassword"
+              placeholder=" "
+              required
+            />
+            <label for="signUpConfirmPassword">Confirm password</label>
+            <button
+              type="button"
+              class="password-toggle"
+              id="toggleSignUpConfirmPassword"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="error-message" id="signUpError"></div>
+          <button type="submit" class="submit-btn">Sign Up</button>
+          <div class="social-container">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Google"><i class="fab fa-google"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+          </div>
+        </form>
+      </div>
+
+      <!-- SIGN IN PANEL -->
+      <div class="form-container sign-in-container">
+        <form class="form" id="signInForm" novalidate>
+          <h1>Sign in</h1>
+          <div class="form-group">
+            <input
+              type="email"
+              id="signInEmail"
+              placeholder=" "
+              autocomplete="off"
+              required
+            />
+            <label for="signInEmail">Email address</label>
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="signInPassword"
+              placeholder=" "
+              required
+            />
+            <label for="signInPassword">Password</label>
+            <button
+              type="button"
+              class="password-toggle"
+              id="toggleSignInPassword"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="error-message" id="signInError"></div>
+          <button type="submit" class="submit-btn">Sign In</button>
+          <a href="#" class="forgot-password" id="forgotPassword"
+            >Forgot password?</a
+          >
+          <div class="social-container">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Google"><i class="fab fa-google"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+          </div>
+        </form>
+      </div>
+
+      <!-- OVERLAY with buttons -->
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Hello there!</h1>
+            <p>Enter your details and begin the journey</p>
+            <button class="ghost" id="signIn">Sign In</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>Welcome Back!</h1>
+            <p>Stay connected — login with your personal info</p>
+
+            <button class="ghost" id="signUp">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // sliding logic
+        const container = document.getElementById("container");
+        const signUpBtn = document.getElementById("signUp");
+        const signInBtn = document.getElementById("signIn");
+
+        if (signUpBtn && signInBtn) {
+          signUpBtn.addEventListener("click", () => {
+            container.classList.add("right-panel-active");
+          });
+          signInBtn.addEventListener("click", () => {
+            container.classList.remove("right-panel-active");
+          });
+        }
+
+        // password visibility toggles (improved)
+        function setupToggle(inputId, buttonId) {
+          const input = document.getElementById(inputId);
+          const btn = document.getElementById(buttonId);
+          if (!input || !btn) return;
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const type =
+              input.getAttribute("type") === "password" ? "text" : "password";
+            input.setAttribute("type", type);
+            const icon = btn.querySelector("i");
+            if (icon) {
+              icon.classList.toggle("fa-eye");
+              icon.classList.toggle("fa-eye-slash");
+            }
+          });
+        }
+        setupToggle("signInPassword", "toggleSignInPassword");
+        setupToggle("signUpPassword", "toggleSignUpPassword");
+        setupToggle("signUpConfirmPassword", "toggleSignUpConfirmPassword");
+
+        // real-time validation & clean error handling
+        const signInForm = document.getElementById("signInForm");
+        const signUpForm = document.getElementById("signUpForm");
+        const signInError = document.getElementById("signInError");
+        const signUpError = document.getElementById("signUpError");
+
+        function displayError(element, message) {
+          if (!element) return;
+          element.textContent = message;
+          element.style.display = "block";
+          // auto hide after 3.5s
+          setTimeout(() => {
+            element.style.display = "none";
+          }, 3500);
+        }
+
+        // sign in validation (basic)
+        signInForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = document.getElementById("signInEmail").value.trim();
+          const pwd = document.getElementById("signInPassword").value;
+
+          if (!email || !pwd) {
+            displayError(signInError, "❌ Both fields required.");
+            return;
+          }
+          if (!email.includes("@") || !email.includes(".")) {
+            displayError(signInError, "📧 Please enter a valid email.");
+            return;
+          }
+          if (pwd.length < 3) {
+            displayError(signInError, "🔐 Password too short (demo).");
+            return;
+          }
+          // success mock
+          displayError(signInError, "✅ Login successful (demo). Welcome!");
+          // optional reset
+          signInForm.reset();
+        });
+
+        // sign up with strength & matching
+        signUpForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("signUpName").value.trim();
+          const email = document.getElementById("signUpEmail").value.trim();
+          const pwd = document.getElementById("signUpPassword").value;
+          const confirm = document.getElementById(
+            "signUpConfirmPassword",
+          ).value;
+
+          if (!name || !email || !pwd || !confirm) {
+            displayError(signUpError, "⚠️ All fields required.");
+            return;
+          }
+          if (name.length < 2) {
+            displayError(signUpError, "👤 Name must be at least 2 characters.");
+            return;
+          }
+          if (!email.includes("@") || !email.includes(".")) {
+            displayError(signUpError, "📧 Provide a valid email address.");
+            return;
+          }
+          if (pwd.length < 6) {
+            displayError(
+              signUpError,
+              "🔒 Password must be at least 6 characters.",
+            );
+            return;
+          }
+          if (!/[A-Z]/.test(pwd) || !/[0-9]/.test(pwd)) {
+            displayError(
+              signUpError,
+              "🔐 Use at least one uppercase letter and one digit.",
+            );
+            return;
+          }
+          if (pwd !== confirm) {
+            displayError(signUpError, "❌ Passwords do not match.");
+            return;
+          }
+
+          // success
+          displayError(signUpError, "🎉 Account created! Please sign in.");
+          // after success -> switch to sign in panel (optional)
+          container.classList.remove("right-panel-active");
+          signUpForm.reset();
+        });
+
+        // Forgot password mock
+        document
+          .getElementById("forgotPassword")
+          ?.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("✉️ (Demo) Password reset link sent to your email.");
+          });
+
+        // social icons just mock (no navigation)
+        document.querySelectorAll(".social-container a").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("🔗 Social login demo — just a preview.");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
