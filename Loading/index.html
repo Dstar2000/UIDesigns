@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loading Animation</title>
+
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #274752;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+
+      #animation {
+        text-align: center;
+      }
+
+      #animation .text-xl {
+        font-size: 2.2rem;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+      }
+
+      .char {
+        display: inline-block;
+        will-change: transform;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="animation">
+      <h2 class="text-xl">L o a d i n g...</h2>
+    </div>
+
+    <script type="module">
+      import { animate, stagger, splitText } from "https://esm.sh/animejs";
+
+      const palette = [
+        "#000", // blue
+        "#fff", // green
+        "#f59e0b", // amber
+        "#f472b6", // pink
+        "#a78bfa", // violet
+        "#fb7185", // rose
+      ];
+
+      let colorIndex = 0;
+
+      const { chars } = splitText("h2", { words: false, chars: true });
+      chars.forEach((c) => c.classList.add("char"));
+
+      function applyColor(color) {
+        chars.forEach((char) => (char.style.color = color));
+      }
+
+      applyColor(palette[colorIndex]);
+
+      animate(chars, {
+        y: [
+          { to: "-2.2rem", ease: "outExpo", duration: 600 },
+          { to: 0, ease: "outBounce", duration: 800, delay: 100 },
+        ],
+        rotate: { from: "-1turn" },
+        delay: stagger(70),
+        ease: "inOutCirc",
+        loop: true,
+        loopDelay: 900,
+        onLoop: () => {
+          colorIndex = (colorIndex + 1) % palette.length;
+          applyColor(palette[colorIndex]);
+        },
+      });
+    </script>
+  </body>
+</html>
