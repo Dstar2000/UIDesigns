@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Card</title>
+
+    <!-- THREE JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <!-- ANIME JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        background: radial-gradient(circle at top, #202d4c, #020617);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .scene {
+        width: 340px;
+        height: 480px;
+        perspective: 1200px;
+      }
+
+      .card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+      }
+
+      .card-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at var(--x) var(--y),
+          rgba(59, 130, 246, 0.35),
+          transparent 40%
+        );
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .card-content {
+        position: relative;
+        z-index: 2;
+        padding: 28px;
+        color: #e2e8f0;
+      }
+
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 16px;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 14px;
+        opacity: 0.8;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      button {
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #22c55e, #4ade80);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="card" id="card">
+        <div class="card-glow"></div>
+        <canvas id="bg"></canvas>
+
+        <div class="card-content">
+          <img src="https://picsum.photos/500/300" />
+          <h2>Premium 3D Card</h2>
+          <p>
+            Interactive card with real 3D lighting, hover glow and smooth
+            animation.
+          </p>
+          <button id="btn">Explore</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const card = document.getElementById("card");
+      const glow = document.querySelector(".card-glow");
+
+      // 3D TILT
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rotateX = -(y - rect.height / 2) / 12;
+        const rotateY = (x - rect.width / 2) / 12;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+        glow.style.setProperty("--x", `${x}px`);
+        glow.style.setProperty("--y", `${y}px`);
+        glow.style.opacity = 1;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "rotateX(0) rotateY(0)";
+        glow.style.opacity = 0;
+      });
+
+      // ANIME BUTTON PULSE
+      document.getElementById("btn").addEventListener("mouseenter", () => {
+        anime({
+          targets: "#btn",
+          scale: 1.08,
+          duration: 300,
+          easing: "easeOutQuad",
+        });
+      });
+
+      document.getElementById("btn").addEventListener("mouseleave", () => {
+        anime({
+          targets: "#btn",
+          scale: 1,
+          duration: 300,
+          easing: "easeOutQuad",
+        });
+      });
+
+      // THREE JS BACKGROUND LIGHT
+      const canvas = document.getElementById("bg");
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(card.clientWidth, card.clientHeight);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        card.clientWidth / card.clientHeight,
+        0.1,
+        100,
+      );
+      camera.position.z = 3;
+
+      const geometry = new THREE.PlaneGeometry(4, 4);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x1e3a8a,
+        transparent: true,
+        opacity: 0.25,
+      });
+
+      const plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+
+      function animate() {
+        requestAnimationFrame(animate);
+        plane.rotation.z += 0.002;
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+  </body>
+</html>
