@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Form</title>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Font Awesome 6 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- Inter font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: 100vh;
+        font-family: "Inter", system-ui, sans-serif;
+        background: #0b0f17;
+        color: #f0f4ff;
+      }
+      .container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: row-reverse;
+      }
+
+      .contact-panel {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: radial-gradient(circle at 30% 40%, #1a2538, #0d1422);
+      }
+      .form-card {
+        background: rgba(16, 26, 40, 0.8);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(80, 140, 255, 0.3);
+        border-radius: 44px;
+        padding: 2.5rem 2rem;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 40px 70px -20px #000;
+      }
+      .form-card h2 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        background: linear-gradient(145deg, #ffffff, #b7d1ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+      .subhead {
+        color: #a3bbdd;
+        border-left: 4px solid #4f7fff;
+        padding-left: 1rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+      }
+      .input-group {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+      .input-group input,
+      .input-group textarea {
+        width: 100%;
+        padding: 0.6rem 0;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid #2e3f57;
+        color: white;
+        outline: none;
+      }
+      .input-group input:focus,
+      .input-group textarea:focus {
+        border-bottom-color: #4f7fff;
+      }
+      .input-group label {
+        position: absolute;
+        top: 0.6rem;
+        left: 0;
+        color: #8fa2c2;
+        pointer-events: none;
+        transition: 0.2s;
+      }
+      .input-group input:focus ~ label,
+      .input-group input:not(:placeholder-shown) ~ label,
+      .input-group textarea:focus ~ label,
+      .input-group textarea:not(:placeholder-shown) ~ label {
+        top: -1.1rem;
+        font-size: 0.75rem;
+        color: #7da2ff;
+      }
+      .input-group input::placeholder,
+      .input-group textarea::placeholder {
+        color: transparent;
+      }
+      .form-card button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #2b509a, #1b3c78);
+        border: 1px solid #5c86e0;
+        border-radius: 60px;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        cursor: pointer;
+      }
+      .footnote {
+        font-size: 0.7rem;
+        color: #58749c;
+        margin-top: 1.5rem;
+        text-align: center;
+      }
+
+      .mosaic-panel {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #0b111e;
+        padding: 2rem;
+      }
+      .grid {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-width: 620px;
+        max-height: 620px;
+        background: #0f1829;
+        box-shadow:
+          0 30px 50px -20px black,
+          0 0 0 1px #314b6b inset;
+        overflow: hidden;
+      }
+      .card {
+        position: absolute;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: 0;
+        box-shadow: 0 15px 25px -8px rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        will-change: transform, width, height, left, top;
+        backface-visibility: hidden;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .card:hover {
+        box-shadow:
+          0 25px 40px -5px #03060b,
+          0 0 0 2px #6b95ff;
+        z-index: 30;
+      }
+      .card[data-brand="instagram"] {
+        background: radial-gradient(
+          circle at 20% 30%,
+          #f5c48a,
+          #cf2e6d,
+          #8a3ab9
+        );
+      }
+      .card[data-brand="x"] {
+        background: #0f1419;
+      }
+      .card[data-brand="linkedin"] {
+        background: #0a66c2;
+      }
+      .card[data-brand="github"] {
+        background: linear-gradient(145deg, #2b3137, #1b1f23);
+      }
+
+      .card .icon3d {
+        display: inline-block;
+        transform-style: preserve-3d;
+        transform: perspective(700px) rotateX(0deg) rotateY(0deg) translateZ(0)
+          scale(1);
+        filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.8));
+        margin-bottom: 0.5rem;
+      }
+      .card .icon3d i {
+        font-size: clamp(4rem, 14vw, 7rem);
+        display: block;
+        color: white !important;
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.9);
+        transform: translateZ(5px);
+      }
+
+      .card .info-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(
+          to top,
+          #0d1a2a,
+          #0d1a2ae0 70%,
+          transparent
+        );
+        padding: 32px 15px 18px;
+        transform: translateY(100%);
+        transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+        pointer-events: none;
+        backdrop-filter: blur(5px);
+        border-top: 1px solid #4f7fff;
+      }
+      .card:hover .info-overlay {
+        transform: translateY(0);
+      }
+      .info-overlay .handle {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #dbe8ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .info-overlay .follow {
+        font-size: 0.8rem;
+        background: #2b57b5;
+        display: inline-block;
+        padding: 6px 24px;
+        border-radius: 40px;
+        border: 1px solid #90b2ff;
+      }
+      @media (max-width: 700px) {
+        .container {
+          flex-direction: column-reverse;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="contact-panel">
+        <div class="form-card">
+          <h2>connect</h2>
+          <div class="subhead">Feel free to reach out</div>
+          <form
+            onsubmit="
+              event.preventDefault();
+              alert('message demo');
+            "
+          >
+            <div class="input-group">
+              <input type="text" placeholder=" " required /><label
+                >Full name</label
+              >
+            </div>
+            <div class="input-group">
+              <input type="email" placeholder=" " required /><label
+                >Email</label
+              >
+            </div>
+            <div class="input-group">
+              <input type="text" placeholder=" " /><label>Subject</label>
+            </div>
+            <div class="input-group">
+              <textarea placeholder=" " rows="3" required></textarea
+              ><label>Message</label>
+            </div>
+            <button type="submit">
+              <span>Send</span><i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+          <div class="footnote">✦ Feel free to reach out ✦</div>
+        </div>
+      </div>
+
+      <div class="mosaic-panel">
+        <div class="grid" id="socialGrid"></div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const grid = document.getElementById("socialGrid");
+        const cards = [];
+
+        const socialData = [
+          {
+            icon: "fab fa-instagram",
+            handle: "@jdcodehub",
+            brand: "instagram",
+          },
+          { icon: "fa-brands fa-twitter", handle: "@jdcodehub", brand: "x" },
+          {
+            icon: "fab fa-linkedin-in",
+            handle: "@jdcodehub",
+            brand: "linkedin",
+          },
+          { icon: "fab fa-github", handle: "@jdcodehub", brand: "github" },
+        ];
+
+        // create cards
+        socialData.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.setAttribute("data-brand", item.brand);
+          card.innerHTML = `
+        <div class="icon3d"><i class="${item.icon}"></i></div>
+        <div class="info-overlay">
+          <div class="handle">${item.handle}</div>
+          <span class="follow">follow</span>
+        </div>
+      `;
+          grid.appendChild(card);
+          cards.push(card);
+        });
+
+        // 5 mosaic layouts
+        const layouts = [
+          [
+            { x: 0, y: 0, w: 0.5, h: 0.5 },
+            { x: 0.5, y: 0, w: 0.5, h: 0.5 },
+            { x: 0, y: 0.5, w: 0.5, h: 0.5 },
+            { x: 0.5, y: 0.5, w: 0.5, h: 0.5 },
+          ],
+          [
+            { x: 0, y: 0, w: 0.5, h: 0.66 },
+            { x: 0, y: 0.66, w: 0.5, h: 0.34 },
+            { x: 0.5, y: 0, w: 0.5, h: 0.33 },
+            { x: 0.5, y: 0.33, w: 0.5, h: 0.67 },
+          ],
+          [
+            { x: 0, y: 0, w: 1, h: 0.5 },
+            { x: 0, y: 0.5, w: 0.33, h: 0.5 },
+            { x: 0.33, y: 0.5, w: 0.34, h: 0.5 },
+            { x: 0.67, y: 0.5, w: 0.33, h: 0.5 },
+          ],
+          [
+            { x: 0, y: 0, w: 0.5, h: 1 },
+            { x: 0.5, y: 0, w: 0.5, h: 0.33 },
+            { x: 0.5, y: 0.33, w: 0.5, h: 0.33 },
+            { x: 0.5, y: 0.66, w: 0.5, h: 0.34 },
+          ],
+          [
+            { x: 0, y: 0, w: 0.33, h: 0.5 },
+            { x: 0.33, y: 0, w: 0.34, h: 0.5 },
+            { x: 0.67, y: 0, w: 0.33, h: 0.5 },
+            { x: 0, y: 0.5, w: 1, h: 0.5 },
+          ],
+        ];
+
+        let isPaused = false;
+        let shiftInterval, animFrame;
+
+        function shiftLayout() {
+          if (animFrame) cancelAnimationFrame(animFrame);
+          const layout = layouts[Math.floor(Math.random() * layouts.length)];
+          const gw = grid.clientWidth;
+          const gh = grid.clientHeight;
+
+          cards.forEach((c) => gsap.killTweensOf(c));
+          const tl = gsap.timeline({ smoothChildTiming: true });
+          cards.forEach((card, i) => {
+            const l = layout[i];
+            tl.to(
+              card,
+              {
+                duration: 1.0,
+                x: l.x * gw,
+                y: l.y * gh,
+                width: l.w * gw,
+                height: l.h * gh,
+                ease: "power3.inOut",
+              },
+              0,
+            );
+          });
+        }
+
+        function startAutoShift() {
+          if (shiftInterval) clearInterval(shiftInterval);
+          shiftInterval = setInterval(() => {
+            if (!isPaused) shiftLayout();
+          }, 3000);
+        }
+
+        // cinematic 3D hover
+        cards.forEach((card) => {
+          const icon = card.querySelector(".icon3d");
+          card.addEventListener("mouseenter", () => {
+            isPaused = true;
+            gsap.globalTimeline.pause();
+            gsap.killTweensOf(icon);
+            gsap
+              .timeline({ overwrite: true })
+              .to(icon, {
+                duration: 0.2,
+                transform:
+                  "perspective(800px) rotateX(2deg) rotateY(6deg) translateZ(100px) scale(1.6)",
+                filter: "drop-shadow(0 40px 30px black)",
+                ease: "power1.out",
+              })
+              .to(icon, {
+                duration: 0.15,
+                transform:
+                  "perspective(800px) rotateX(0deg) rotateY(2deg) translateZ(150px) scale(1.8)",
+                ease: "sine.out",
+              })
+              .to(icon, {
+                duration: 0.2,
+                transform:
+                  "perspective(800px) rotateX(1deg) rotateY(3deg) translateZ(170px) scale(1.9)",
+                ease: "back.out(1.5)",
+              })
+              .to(icon, {
+                duration: 0.3,
+                transform:
+                  "perspective(800px) rotateX(1deg) rotateY(3deg) translateZ(180px) scale(2.0)",
+                ease: "power1.inOut",
+              });
+          });
+          card.addEventListener("mouseleave", () => {
+            isPaused = false;
+            gsap.globalTimeline.resume();
+            gsap.killTweensOf(icon);
+            gsap.to(icon, {
+              duration: 0.5,
+              transform:
+                "perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0) scale(1)",
+              filter: "drop-shadow(0 20px 20px black)",
+              ease: "elastic.out(1, 0.4)",
+            });
+          });
+        });
+
+        // pause on grid
+        grid.addEventListener("mouseenter", () => {
+          isPaused = true;
+          gsap.globalTimeline.pause();
+        });
+        grid.addEventListener("mouseleave", () => {
+          isPaused = false;
+          gsap.globalTimeline.resume();
+        });
+
+        // initial call & start
+        setTimeout(() => shiftLayout(), 150);
+        startAutoShift();
+
+        let resizeTimer;
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimer);
+          gsap.globalTimeline.pause();
+          resizeTimer = setTimeout(() => {
+            if (!isPaused) {
+              cards.forEach((c) => gsap.killTweensOf(c));
+              shiftLayout();
+              gsap.globalTimeline.resume();
+            }
+          }, 200);
+        });
+        const style = document.createElement("style");
+        style.innerHTML = `.card i.fa-twitter, .card[data-brand="x"] i { color: white !important; }`;
+        document.head.appendChild(style);
+      })();
+    </script>
+  </body>
+</html>
