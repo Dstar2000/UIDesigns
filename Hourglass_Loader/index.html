@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hourglass Loader</title>
+    <style>
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #111111;
+      }
+
+      .timer {
+        --anim-duration: 2s;
+        display: block;
+        margin: auto;
+        width: 16em;
+        height: auto;
+      }
+
+      .timer__shine-top,
+      .timer__shine-bottom,
+      .timer__vessel,
+      .timer__arc-heavy,
+      .timer__arc-medium,
+      .timer__arc-light,
+      .timer__particle-fall,
+      .timer__particle-pool,
+      .timer__grain-left,
+      .timer__grain-right,
+      .timer__line-left,
+      .timer__line-right,
+      .timer__mound-upper,
+      .timer__mound-lower {
+        animation-duration: var(--anim-duration);
+        animation-timing-function: cubic-bezier(0.83, 0, 0.17, 1);
+        animation-iteration-count: infinite;
+      }
+
+      .timer__shine-top {
+        animation-name: shine-top;
+      }
+      .timer__shine-bottom {
+        animation-name: shine-bottom;
+      }
+      .timer__vessel {
+        animation-name: vessel-flip;
+        transform-origin: 12.25px 16.75px;
+      }
+      .timer__arc-heavy,
+      .timer__arc-medium,
+      .timer__arc-light {
+        transform-origin: 26px 26px;
+      }
+      .timer__arc-heavy {
+        animation-name: arc-heavy;
+      }
+      .timer__arc-medium {
+        animation-name: arc-medium;
+      }
+      .timer__arc-light {
+        animation-name: arc-light;
+      }
+      .timer__particle-fall {
+        animation-name: particle-fall;
+      }
+      .timer__particle-pool {
+        animation-name: particle-pool;
+      }
+      .timer__grain-left {
+        animation-name: grain-left;
+      }
+      .timer__grain-right {
+        animation-name: grain-right;
+      }
+      .timer__line-left {
+        animation-name: line-left;
+      }
+      .timer__line-right {
+        animation-name: line-right;
+      }
+      .timer__mound-upper {
+        animation-name: mound-upper;
+      }
+      .timer__mound-lower {
+        animation-name: mound-lower;
+        transform-origin: 12.25px 31.5px;
+      }
+
+      @keyframes vessel-flip {
+        from {
+          transform: translate(13.75px, 9.25px) rotate(-180deg);
+        }
+        24%,
+        to {
+          transform: translate(13.75px, 9.25px) rotate(0);
+        }
+      }
+
+      @keyframes shine-top {
+        from {
+          stroke: rgba(255, 255, 255, 0);
+        }
+        24%,
+        to {
+          stroke: #ffffff;
+        }
+      }
+      @keyframes shine-bottom {
+        from {
+          stroke: #ffffff;
+        }
+        24%,
+        to {
+          stroke: rgba(255, 255, 255, 0);
+        }
+      }
+
+      @keyframes arc-heavy {
+        from {
+          animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+          stroke: rgba(200, 200, 200, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(0.67turn);
+        }
+        20% {
+          animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+          stroke: #e0e0e0;
+          stroke-dashoffset: 141.11;
+          transform: rotate(1turn);
+        }
+        40%,
+        to {
+          stroke: rgba(200, 200, 200, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(1.33turn);
+        }
+      }
+
+      @keyframes arc-medium {
+        from,
+        8% {
+          animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+          stroke: rgba(255, 255, 255, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(0.5turn);
+        }
+        20% {
+          animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+          stroke: #ffffff;
+          stroke-dashoffset: 147.53;
+          transform: rotate(0.83turn);
+        }
+        32%,
+        to {
+          stroke: rgba(255, 255, 255, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(1.17turn);
+        }
+      }
+
+      @keyframes arc-light {
+        from,
+        4% {
+          animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+          stroke: rgba(180, 180, 180, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(0.33turn);
+        }
+        24% {
+          animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+          stroke: #b0b0b0;
+          stroke-dashoffset: 134.7;
+          transform: rotate(0.67turn);
+        }
+        44%,
+        to {
+          stroke: rgba(180, 180, 180, 0);
+          stroke-dashoffset: 153.94;
+          transform: rotate(1turn);
+        }
+      }
+
+      @keyframes particle-fall {
+        from,
+        10% {
+          stroke-dashoffset: 1;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -107;
+        }
+      }
+      @keyframes particle-pool {
+        from,
+        10% {
+          stroke-dashoffset: 55;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -54;
+        }
+      }
+      @keyframes grain-left {
+        from,
+        10% {
+          stroke-dashoffset: 29;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -22;
+        }
+      }
+      @keyframes grain-right {
+        from,
+        10% {
+          stroke-dashoffset: 27;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -24;
+        }
+      }
+      @keyframes line-left {
+        from,
+        10% {
+          stroke-dashoffset: 53;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -55;
+        }
+      }
+      @keyframes line-right {
+        from,
+        10% {
+          stroke-dashoffset: 14;
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        70%,
+        to {
+          stroke-dashoffset: -24.5;
+        }
+      }
+      @keyframes mound-upper {
+        from,
+        10% {
+          transform: translate(0, 0);
+          animation-timing-function: linear;
+        }
+        15% {
+          transform: translate(0, 1.5px);
+          animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+        }
+        51%,
+        to {
+          transform: translate(0, 13px);
+        }
+      }
+      @keyframes mound-lower {
+        from,
+        31% {
+          transform: scale(1, 0);
+          animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+        }
+        56%,
+        to {
+          transform: scale(1, 1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      aria-label="hourglass timer with monochrome glass and sand-colored filling"
+      role="img"
+      height="64px"
+      width="64px"
+      viewBox="0 0 56 56"
+      class="timer"
+    >
+      <defs>
+        <linearGradient id="glassFill" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="hsl(0, 0%, 40%)" />
+          <stop offset="50%" stop-color="hsl(0, 0%, 20%)" />
+          <stop offset="100%" stop-color="hsl(0, 0%, 8%)" />
+        </linearGradient>
+        <linearGradient id="sandFill" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="hsl(40, 50%, 85%)" />
+          <stop offset="60%" stop-color="hsl(35, 45%, 65%)" />
+          <stop offset="100%" stop-color="hsl(30, 40%, 40%)" />
+        </linearGradient>
+        <linearGradient id="capMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="hsl(0, 0%, 80%)" />
+          <stop offset="50%" stop-color="hsl(0, 0%, 50%)" />
+          <stop offset="100%" stop-color="hsl(0, 0%, 25%)" />
+        </linearGradient>
+      </defs>
+
+      <clipPath id="mound-clip-upper">
+        <path
+          d="M 14.613 13.087 C 15.814 12.059 19.3 8.039 20.3 6.539 C 21.5 4.789 21.5 2.039 21.5 2.039 L 3 2.039 C 3 2.039 3 4.789 4.2 6.539 C 5.2 8.039 8.686 12.059 9.887 13.087 C 11 14.039 12.25 14.039 12.25 14.039 C 12.25 14.039 13.5 14.039 14.613 13.087 Z"
+          class="timer__mound-upper"
+        ></path>
+      </clipPath>
+      <clipPath id="mound-clip-lower">
+        <path
+          d="M 14.613 20.452 C 15.814 21.48 19.3 25.5 20.3 27 C 21.5 28.75 21.5 31.5 21.5 31.5 L 3 31.5 C 3 31.5 3 28.75 4.2 27 C 5.2 25.5 8.686 21.48 9.887 20.452 C 11 19.5 12.25 19.5 12.25 19.5 C 12.25 19.5 13.5 19.5 14.613 20.452 Z"
+          class="timer__mound-lower"
+        ></path>
+      </clipPath>
+
+      <g transform="translate(2,2)">
+        <g
+          transform="rotate(-90,26,26)"
+          stroke-linecap="round"
+          stroke-dashoffset="153.94"
+          stroke-dasharray="153.94 153.94"
+          fill="none"
+        >
+          <circle
+            transform="rotate(0,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="2.5"
+            class="timer__arc-heavy"
+            stroke="hsl(0, 0%, 85%)"
+          />
+          <circle
+            transform="rotate(90,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="1.75"
+            class="timer__arc-medium"
+            stroke="hsl(0, 0%, 100%)"
+          />
+          <circle
+            transform="rotate(180,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="1"
+            class="timer__arc-light"
+            stroke="hsl(0, 0%, 70%)"
+          />
+        </g>
+
+        <g transform="translate(13.75,9.25)" class="timer__vessel">
+          <path
+            d="M 1.5 2 L 23 2 C 23 2 22.5 8.5 19 12 C 16 15.5 13.5 13.5 13.5 16.75 C 13.5 20 16 18 19 21.5 C 22.5 25 23 31.5 23 31.5 L 1.5 31.5 C 1.5 31.5 2 25 5.5 21.5 C 8.5 18 11 20 11 16.75 C 11 13.5 8.5 15.5 5.5 12 C 2 8.5 1.5 2 1.5 2 Z"
+            fill="url(#glassFill)"
+            stroke="hsl(0, 0%, 55%)"
+            stroke-width="0.6"
+          />
+
+          <g stroke-linecap="round">
+            <line
+              y2="20.75"
+              x2="12"
+              y1="15.75"
+              x1="12"
+              stroke-dasharray="0.25 33.75"
+              stroke-width="1.3"
+              class="timer__grain-left"
+              stroke="hsl(35, 50%, 70%)"
+            />
+            <line
+              y2="21.75"
+              x2="12.5"
+              y1="16.75"
+              x1="12.5"
+              stroke-dasharray="0.25 33.75"
+              stroke-width="1.3"
+              class="timer__grain-right"
+              stroke="hsl(35, 50%, 70%)"
+            />
+            <line
+              y2="31.5"
+              x2="12.25"
+              y1="18"
+              x1="12.25"
+              stroke-dasharray="0.5 107.5"
+              stroke-width="1.3"
+              class="timer__particle-fall"
+              stroke="hsl(30, 45%, 55%)"
+            />
+            <line
+              y2="31.5"
+              x2="12.25"
+              y1="14.75"
+              x1="12.25"
+              stroke-dasharray="54 54"
+              stroke-width="2"
+              class="timer__particle-pool"
+              stroke="hsl(25, 45%, 45%)"
+            />
+            <line
+              y2="31.5"
+              x2="12"
+              y1="16"
+              x1="12"
+              stroke-dasharray="1 107"
+              stroke-width="1.3"
+              stroke="hsl(30, 40%, 50%)"
+              class="timer__line-left"
+            />
+            <line
+              y2="31.5"
+              x2="12.5"
+              y1="16"
+              x1="12.5"
+              stroke-dasharray="12 96"
+              stroke-width="1.3"
+              stroke="hsl(30, 40%, 50%)"
+              class="timer__line-right"
+            />
+
+            <g stroke-width="0" fill="url(#sandFill)">
+              <path
+                d="M 12.25 15 L 15.392 13.486 C 21.737 11.168 22.5 2 22.5 2 L 2 2.013 C 2 2.013 2.753 11.046 9.009 13.438 L 12.25 15 Z"
+                clip-path="url(#mound-clip-upper)"
+              ></path>
+              <path
+                d="M 12.25 18.5 L 15.392 20.014 C 21.737 22.332 22.5 31.5 22.5 31.5 L 2 31.487 C 2 31.487 2.753 22.454 9.009 20.062 Z"
+                clip-path="url(#mound-clip-lower)"
+              ></path>
+            </g>
+          </g>
+
+          <g
+            stroke-width="2.5"
+            stroke-linecap="round"
+            opacity="0.8"
+            fill="none"
+          >
+            <path
+              d="M 19.437 3.421 C 19.437 3.421 19.671 6.454 17.914 8.846 C 16.157 11.238 14.5 11.5 14.5 11.5"
+              stroke="hsl(0, 0%, 100%)"
+              class="timer__shine-top"
+            ></path>
+            <path
+              transform="rotate(180,12.25,16.75)"
+              d="M 19.437 3.421 C 19.437 3.421 19.671 6.454 17.914 8.846 C 16.157 11.238 14.5 11.5 14.5 11.5"
+              stroke="hsla(0, 0%, 100%, 0)"
+              class="timer__shine-bottom"
+            ></path>
+          </g>
+
+          <rect height="2" width="24.5" fill="url(#capMetal)"></rect>
+          <rect
+            height="1"
+            width="19.5"
+            y="0.5"
+            x="2.5"
+            ry="0.5"
+            rx="0.5"
+            fill="hsl(0, 0%, 75%)"
+          ></rect>
+          <rect height="2" width="24.5" y="31.5" fill="url(#capMetal)"></rect>
+          <rect
+            height="1"
+            width="19.5"
+            y="32"
+            x="2.5"
+            ry="0.5"
+            rx="0.5"
+            fill="hsl(0, 0%, 75%)"
+          ></rect>
+
+          <path
+            d="M 6 5 Q 12 3 18 5"
+            stroke="hsl(0, 0%, 85%)"
+            stroke-width="0.8"
+            fill="none"
+            opacity="0.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M 6 28 Q 12 31 18 28"
+            stroke="hsl(0, 0%, 85%)"
+            stroke-width="0.8"
+            fill="none"
+            opacity="0.4"
+            stroke-linecap="round"
+          />
+        </g>
+      </g>
+    </svg>
+  </body>
+</html>
