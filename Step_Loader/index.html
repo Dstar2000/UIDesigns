@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Step Bounce Loader</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+      }
+
+      .bounce-step-loader {
+        position: relative;
+        width: 120px;
+        height: 90px;
+      }
+
+      .bounce-step-loader::before {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: #2a9d8f;
+        border-radius: 50%;
+        bottom: 30px;
+        left: 50px;
+        animation: bounce-step-ball 0.5s ease-in-out infinite alternate;
+      }
+
+      .bounce-step-loader::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 8px;
+        width: 40px;
+        border-radius: 4px;
+        box-shadow:
+          0 5px 0 #f2f2f2,
+          -35px 50px 0 #f2f2f2,
+          -70px 95px 0 #f2f2f2;
+        animation: bounce-step-stairs 1s ease-in-out infinite;
+      }
+
+      @keyframes bounce-step-ball {
+        0% {
+          transform: scale(1, 0.7);
+        }
+
+        40% {
+          transform: scale(0.8, 1.2);
+        }
+
+        60% {
+          transform: scale(1, 1);
+        }
+
+        100% {
+          bottom: 140px;
+        }
+      }
+
+      @keyframes bounce-step-stairs {
+        0% {
+          box-shadow:
+            0 10px 0 rgba(0, 0, 0, 0),
+            0 10px 0 #f2f2f2,
+            -35px 50px 0 #f2f2f2,
+            -70px 90px 0 #f2f2f2;
+        }
+
+        100% {
+          box-shadow:
+            0 10px 0 #f2f2f2,
+            -35px 50px 0 #f2f2f2,
+            -70px 90px 0 #f2f2f2,
+            -70px 90px 0 rgba(0, 0, 0, 0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="bounce-step-loader"></div>
+  </body>
+</html>
