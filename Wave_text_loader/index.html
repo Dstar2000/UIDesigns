@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wave Text Loader</title>
+
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #111;
+      }
+
+      .wave-text {
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 60px;
+        display: inline-grid;
+        color: #00f5ff;
+        animation: colorShift 4s linear infinite;
+      }
+
+      .wave-text::before,
+      .wave-text::after {
+        content: "Loading...";
+        grid-area: 1/1;
+        line-height: 1em;
+
+        mask: linear-gradient(90deg, #000 50%, transparent 0) 0 50%/2ch 100%;
+        mask-position: calc(var(--dir, 0) * 1ch) 50%;
+        animation: waveMotion 2s infinite;
+      }
+
+      .wave-text::after {
+        --dir: -1;
+      }
+
+      @keyframes waveMotion {
+        33% {
+          transform: translateY(calc(var(--dir, 1) * 50%));
+          mask-position: calc(var(--dir, 0) * 1ch) 50%;
+        }
+        66% {
+          transform: translateY(calc(var(--dir, 1) * 50%));
+          mask-position: calc(var(--dir, 0) * 1ch + 1ch) 50%;
+        }
+        100% {
+          transform: translateY(calc(var(--dir, 1) * 0%));
+          mask-position: calc(var(--dir, 0) * 1ch + 1ch) 50%;
+        }
+      }
+
+      @keyframes colorShift {
+        0% {
+          color: #00f5ff;
+        }
+        25% {
+          color: #00ff88;
+        }
+        50% {
+          color: #ff00c8;
+        }
+        75% {
+          color: #ffaa00;
+        }
+        100% {
+          color: #00f5ff;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wave-text"></div>
+  </body>
+</html>
