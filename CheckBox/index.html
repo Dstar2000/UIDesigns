@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated Checkmark</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #0f172a;
+      }
+
+      .check-wrapper {
+        cursor: pointer;
+        display: inline-block;
+      }
+
+      .check-input {
+        display: none;
+      }
+
+      .check-svg {
+        width: 100px;
+        height: 100px;
+        overflow: visible;
+      }
+
+      .check-path {
+        fill: none;
+        stroke: #38bdf8;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 241 9999;
+        stroke-dashoffset: 0;
+        transition:
+          stroke-dasharray 0.5s ease,
+          stroke-dashoffset 0.5s ease;
+      }
+
+      .check-input:checked ~ .check-svg .check-path {
+        stroke-dasharray: 70 9999;
+        stroke-dashoffset: -262;
+        stroke: #22c55e;
+      }
+    </style>
+  </head>
+  <body>
+    <label class="check-wrapper">
+      <input type="checkbox" class="check-input" />
+      <svg viewBox="0 0 64 64" class="check-svg">
+        <path
+          d="M0 16 V56 A8 8 0 0 0 8 64 H56 A8 8 0 0 0 64 56 V8 A8 8 0 0 0 56 0 H8 A8 8 0 0 0 0 8 V16 L32 48 L64 16 V8 A8 8 0 0 0 56 0 H8 A8 8 0 0 0 0 8 V56 A8 8 0 0 0 8 64 H56 A8 8 0 0 0 64 56 V16"
+          pathLength="575"
+          class="check-path"
+        ></path>
+      </svg>
+    </label>
+  </body>
+</html>
